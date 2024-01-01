@@ -1,3 +1,4 @@
+import {Operator} from "./operator";
 import {isInAny} from "../utils";
 
 export class TokenType {
@@ -36,6 +37,29 @@ export class TokenType {
     public static readonly TokenTypeSpace = new TokenType('space');
 
     constructor(public name: string) {
+    }
+
+    public toOperator(): Operator {
+        const map = {
+            [TokenType.TokenTypeEqual.name]: Operator.OperatorEqual,
+            [TokenType.TokenTypeNotEqual.name]: Operator.OperatorNotEqual,
+            [TokenType.TokenTypeGreaterThan.name]: Operator.OperatorGreaterThan,
+            [TokenType.TokenTypeGreaterThanOrEqual.name]: Operator.OperatorGreaterThanOrEqual,
+            [TokenType.TokenTypeLessThan.name]: Operator.OperatorLessThan,
+            [TokenType.TokenTypeLessThanOrEqual.name]: Operator.OperatorLessThanOrEqual,
+            [TokenType.TokenTypeBlank.name]: Operator.OperatorBlank,
+            [TokenType.TokenTypeNotBlank.name]: Operator.OperatorNotBlank,
+            [TokenType.TokenTypeContain.name]: Operator.OperatorContain,
+            [TokenType.TokenTypeNotContain.name]: Operator.OperatorNotContain,
+            [TokenType.TokenTypeStartWith.name]: Operator.OperatorStartWith,
+            [TokenType.TokenTypeNotStartWith.name]: Operator.OperatorNotStartWith,
+            [TokenType.TokenTypeEndWith.name]: Operator.OperatorEndWith,
+            [TokenType.TokenTypeNotEndWith.name]: Operator.OperatorNotEndWith,
+            [TokenType.TokenTypeIn.name]: Operator.OperatorIn,
+            [TokenType.TokenTypeNotIn.name]: Operator.OperatorNotIn
+        };
+
+        return map[this.name] ?? Operator.OperatorUnknown;
     }
 
     public isFieldTokenType(): boolean {
