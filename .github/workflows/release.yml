@@ -1,0 +1,49 @@
+name: Build & Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Build & Release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: vars
+        run: |
+          bash ./scripts/version.sh
+          echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+
+      - name: Build
+        env:
+          VERSION: ${{ steps.vars.outputs.version }}
+        run: |
+          bash ./scripts/build.sh
+
+      - name: Test
+        run: |
+          bash ./scripts/test.sh
+
+      - name: Create release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ steps.vars.outputs.version }}"
+          release_name: "v${{ steps.vars.outputs.version }}"
+          draft: false
+          prerelease: false
+
+      - name: Pack
+        env:
+            REGISTRY_SOURCE: registry.npmjs.org
+            REGISTRY_KEY: ${{ secrets.NPM_TOKEN }}
+        run: |
+            bash ./scripts/pack.sh

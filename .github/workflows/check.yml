@@ -1,0 +1,28 @@
+name: Build & Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Build & Test
+
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Build
+        run: |
+          bash ./scripts/build.sh
+
+      - name: Test
+        run: |
+          bash ./scripts/test.sh
